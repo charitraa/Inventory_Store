@@ -9,7 +9,7 @@ class Collection(models.Model):
     featured_product = models.ForeignKey('Product',on_delete=models.SET_NULL,null=True, related_name='+')
 
 class Product(models.Model):
-    sku = models.CharField(primary_key=True)
+    sku = models.CharField(primary_key=True,max_length=255)
     title = models.CharField (max_length=300)
     description = models.TextField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2) 
