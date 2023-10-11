@@ -40,8 +40,8 @@ class Order(models.Model):
     PAYMENT_STATUS_COMPLETED = 'C'
     PAYMENT_STATUS_FALIED ='F'
     PAYMENT_STATUS_CHOICES =[(
-        PAYMENT_STATUS_PENDING,'Pending')
-        (PAYMENT_STATUS_COMPLETED,'Complete')
+        PAYMENT_STATUS_PENDING,'Pending'),
+        (PAYMENT_STATUS_COMPLETED,'Complete'),
         (PAYMENT_STATUS_FALIED,'Falied')]
     placed_at = models.DateField(auto_now=True)
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES,default=PAYMENT_STATUS_PENDING) 
