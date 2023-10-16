@@ -26,7 +26,7 @@ class Customer(models.Model):
     MEMBERSHIP_CHOICES = [
         (MEMBERSHIP_BRONZE, 'Bronze'),
         (MEMBERSHIP_SLIVER, 'Silver'),
-        (MEMBERSHIP_GOLD, 'Gold'),
+        (MEMBERSHIP_GOLD, 'Gold'), 
     ]
     given_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -36,7 +36,7 @@ class Customer(models.Model):
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
     
 
-class Order(models.Model):
+class Order(models.Model): 
     PAYMENT_STATUS_PENDING = 'P'
     PAYMENT_STATUS_COMPLETED = 'C'
     PAYMENT_STATUS_FALIED ='F'
