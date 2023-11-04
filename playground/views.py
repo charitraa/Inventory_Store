@@ -6,5 +6,5 @@ from store.models import Product
 # request handler
 
 def say_hello(request):
-    quey = Product.objects.filter(last_updated__gt=2021)
-    return HttpResponse('hello World')
+    # quey = Product.objects.filter(last_updated__gt=2021)
+    return render(request, 'hello.html')
