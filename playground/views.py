@@ -1,10 +1,22 @@
 from django.shortcuts import render
 from django.shortcuts import HttpResponse
+from django.db.models import Q , F
 from store.models import Product
 # Create your views here.
 # request -> response
 # request handler
 
 def say_hello(request):
-    # quey = Product.objects.filter(last_updated__gt=2021)
-    return render(request, 'hello.html')
+    # quey = Product.objects.filter(id__range=(1,5))
+    
+    # query = Product.objects.filter(last_updated__year=2023)
+
+    # complex quries
+
+    # query = Product.objects.filter(Q(last_updated__year=2023) & Q(unit_price__gt = 10))
+    #compairing with fields
+
+    # query = Product.objects.filter(inventory=F('unit_price'))
+
+    query = Product.objects.order_by('title')
+    return render(request, 'hello.html',{'quey':'ravi','products':list(query)}) 
