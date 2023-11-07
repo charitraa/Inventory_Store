@@ -21,6 +21,7 @@ def say_hello(request):
     # query = Product.objects.filter(inventory=F('unit_price'))
     #annocated,aggregate ,selected_related, F , Value , ExpressionWrapper
     
-    
+
     # query = Product.objects.order_by('title')
+    #create ,Update ,Delete 
     return render(request, 'hello.html',{'quey':'ravi','products':list(query)}) 
