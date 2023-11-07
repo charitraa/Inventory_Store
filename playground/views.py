@@ -22,6 +22,6 @@ def say_hello(request):
     #annocated,aggregate ,selected_related, F , Value , ExpressionWrapper
     
 
-    # query = Product.objects.order_by('title')
+    query = Product.objects.order_by('title')
     #create ,Update ,Delete , raw ,transcation
     return render(request, 'hello.html',{'quey':'ravi','products':list(query)}) 
