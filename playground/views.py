@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.shortcuts import HttpResponse
 from django.db.models import Q , F
 from store.models import Product
+from django.contrib.contenttypes.models import ContentType
+from tags.models import TaggedItem
 # Create your views here.
 # request -> response
 # request handler
@@ -17,6 +19,8 @@ def say_hello(request):
     #compairing with fields
 
     # query = Product.objects.filter(inventory=F('unit_price'))
-
-    query = Product.objects.order_by('title')
+    #annocated,aggregate ,selected_related, F , Value , ExpressionWrapper
+    
+    
+    # query = Product.objects.order_by('title')
     return render(request, 'hello.html',{'quey':'ravi','products':list(query)}) 
