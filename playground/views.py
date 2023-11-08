@@ -23,5 +23,5 @@ def say_hello(request):
     
 
     query = Product.objects.order_by('title')
-    #create ,Update ,Delete , raw ,transcation
+    #create ,Update ,Delete , raw ,transcation,new
     return render(request, 'hello.html',{'quey':'ravi','products':list(query)}) 
