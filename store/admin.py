@@ -1,8 +1,12 @@
 from django.contrib import admin
+from . import models
 from .models import Promotion, Product, Address,Cart,CartItem,Collection,Customer,Order,OrderItem
+
+@admin.register(models.Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['title','unit_price' ]
 # Register your models here.
 admin.site.register(Promotion)
-admin.site.register(Product)
 admin.site.register(Address)
 admin.site.register(Cart)
 admin.site.register(CartItem)
