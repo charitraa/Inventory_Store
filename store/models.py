@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MinLengthValidator
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
@@ -18,12 +18,13 @@ class Product(models.Model):
     id = models.CharField(primary_key=True,max_length=255)
     title = models.CharField (max_length=300)
     slug = models.SlugField(default='-')
-    description = models.TextField()
-    unit_price = models.CharField(max_length=300) 
+    description = models.TextField(null=True, blank=True)
+    unit_price = models.CharField(
+        max_length=300,validators = [MinLengthValidator(1)]) 
     inventory = models.IntegerField()
     last_updated = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection,on_delete=models.PROTECT)
-    promotions = models.ManyToManyField(Promotion)
+    promotions = models.ManyToManyField(Promotion, blank=True)
     
     def __str__(self):
         return self.title
