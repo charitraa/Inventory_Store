@@ -1,13 +1,12 @@
 
 from django.contrib.contenttypes.admin import GenericTabularInline
-from tags.models import TaggedItem
 from django.contrib import admin , messages
 from django.db.models.query import QuerySet
 from . import models
 from django.urls import reverse
 from django.utils.html import format_html , urlencode
 from django.db.models.aggregates import Count
-from .models import Promotion, Address,Cart,CartItem,OrderItem
+
 
 class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
@@ -56,11 +55,6 @@ class ProductAdmin(admin.ModelAdmin):
             request,f'{updated_count} products were sucessfully updated.', messages.ERROR
         )
 # Register your models here.
-admin.site.register(Promotion)
-admin.site.register(Address)
-admin.site.register(Cart)
-admin.site.register(CartItem)
-
 
 @admin.register(models.Collection)
 class CollectionAdmin(admin.ModelAdmin):
@@ -97,5 +91,5 @@ class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
     inlines = [OrderItemInline]
     list_display =['id','placed_at','customer']
-admin.site.register(OrderItem)
+
 
