@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinValueValidator
+
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
@@ -15,15 +16,13 @@ class Collection(models.Model):
         ordering = ['title']
 
 class Product(models.Model):
-    id = models.CharField(primary_key=True,max_length=255)
     title = models.CharField (max_length=300)
-    slug = models.SlugField(default='-')
+    slug = models.SlugField()
     description = models.TextField(null=True, blank=True)
-    unit_price = models.CharField(
-        max_length=300,validators = [MinLengthValidator(1)]) 
-    inventory = models.IntegerField()
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+    inventory = models.IntegerField(validators = [MinValueValidator(1)])
     last_updated = models.DateTimeField(auto_now=True)
-    collection = models.ForeignKey(Collection,on_delete=models.PROTECT)
+    collection = models.ForeignKey(Collection,on_delete=models.PROTECT, related_name="products")
     promotions = models.ManyToManyField(Promotion, blank=True)
     
     def __str__(self):
@@ -31,6 +30,7 @@ class Product(models.Model):
     
     class Meta:
         ordering = ['title']
+
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = 'B'
     MEMBERSHIP_SLIVER = 'S'
@@ -66,10 +66,10 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product  = models.ForeignKey(Product,on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
+    product  = models.ForeignKey(Product,on_delete=models.PROTECT, related_name='orderitems')
     quantity = models.PositiveSmallIntegerField()
-    unit_price = models.CharField(max_length=300) 
+    unit_price = models.DecimalField(max_digits=6, decimal_places = 2)
 
 class Address(models.Model):
     street = models.CharField(max_length=255)
@@ -80,6 +80,6 @@ class Cart(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(validators = [MinValueValidator(1)])
