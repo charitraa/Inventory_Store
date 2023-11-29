@@ -8,13 +8,16 @@ from .serializers import ProductSerializer
 # Create your views here.
 @api_view()
 def product_view(request):
-    querset = Product.objects.all()
-    serializer = ProductSerializer(querset, many=True)
+    querset = Product.objects.select_related('collection').all()
+    serializer = ProductSerializer(querset, many=True ,context ={'request': request})
     return Response(serializer.data)
 
 @api_view()
 def product_detail(request, id):
-    product = get_object_or_404(Product, pk=id)
-    print(product)
+    product = get_object_or_404(Product, pk=id) 
     Seralizer = ProductSerializer(product)
     return Response(Seralizer.data)
+
+@api_view() 
+def Collection_details(request, pk):
+    return Response ('ok')
