@@ -5,39 +5,40 @@ from rest_framework.response import Response
 from .models import Product , Collection
 from rest_framework import status
 from .serializers import ProductSerializer , CollectionSerializer
+from rest_framework.views import APIView
 from django.db.models.aggregates import Count
 # Create your views here.
-@api_view(['GET', 'POST'])
-def product_view(request):
-    if request.method == 'GET':
+
+class ProductList(APIView):
+    def get(self,request):
         querset = Product.objects.select_related('collection').all()
         serializer = ProductSerializer(querset, many=True ,context ={'request': request})
         return Response(serializer.data)
-    elif request.method == 'POST':
+    def post(self, request):
         serializer = ProductSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data , status=status.HTTP_201_CREATED)
 
-
-
-@api_view(['GET','PUT','DELETE'])
-def product_detail(request, id):
-    product = get_object_or_404(Product, pk=id)
-    if request.method == 'GET':
+class ProductDetail(APIView):
+    def get(self,request,id):
+        product = get_object_or_404(Product, pk=id)
         seralizer = ProductSerializer(product)
         return Response(seralizer.data)
-    elif request.method =='PUT':
+    def put(self, request,id):
+        product = get_object_or_404(Product, pk=id)
         seralizer = ProductSerializer(product,data=request.data)
         seralizer.is_valid(raise_exception=True)
         seralizer.save()
         return Response(seralizer.validated_data)
-    elif request.method == 'DELETE':
+    def delete(self, request,id):
+        product = get_object_or_404(Product, pk=id)
         if product.orderitems.count() > 0:
             return Response({'error':'Product cannot be deleted because it is associated with an order item'},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
         return Response (status=status.HTTP_204_NO_CONTENT)
     
+
 @api_view(['GET', 'POST',])
 def collection_veiw(request):
     if request.method == 'GET':
@@ -63,7 +64,5 @@ def Collection_details(request, pk):
         seralizer.save()
         return Response(seralizer.validated_data)
     elif request.method == 'DELETE':
-        # if collection.orderitems.count() > 0:
-        #     return Response({'error':'collection cannot be deleted '},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         collection.delete()
         return Response (status=status.HTTP_204_NO_CONTENT)
