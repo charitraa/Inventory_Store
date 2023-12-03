@@ -5,11 +5,11 @@ from rest_framework_nested import routers
 from . import views
 
 router = routers.DefaultRouter()
-router.register('products',views.ProductViewSet)
+router.register('products',views.ProductViewSet,basename='products')
 router.register('collections', views.CollectionVeiwSet)
 
-product_routers = routers.NestedDefaultRouter(router,'products',Lookup='product_pk')
-product_routers.register('reviews', views.ReviewViewSet)
+product_routers = routers.NestedDefaultRouter(router,'products',lookup='product')
+product_routers.register('reviews', views.ReviewViewSet , basename='product-reviews')
 
 
-urlpatterns = router.urls
+urlpatterns = router.urls +product_routers.urls

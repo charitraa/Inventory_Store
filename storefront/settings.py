@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'playground',
+    'django_filters',
     'store',
     'store_custom',
     'tags',
