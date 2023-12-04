@@ -3,7 +3,7 @@ from .models import Product
 
 class ProductFilter(FilterSet):
     class Meta:
-        models = Product
+        model = Product
         fields = {
             'collection_id':['exact'],
             'unit_price':['lt', 'gt']
