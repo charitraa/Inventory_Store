@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'playground',
     'django_filters',
     'store',
-    'store_custom',
+    'core',
     'tags',
     'likes'
 ]
@@ -137,3 +137,4 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING':False,
     'DEFAULTPAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
 }
+AUTH_USER_MODEL = 'core.User'
