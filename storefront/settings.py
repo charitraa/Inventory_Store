@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-qmqwmv2eo4wjzudy)pc+j514%vge@d8+ckuu=rg%-l0y)+f1dt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+import pymysql
+
+pymysql.install_as_MySQLdb()
+
 ALLOWED_HOSTS = []
 
 
@@ -83,11 +87,11 @@ WSGI_APPLICATION = 'storefront.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'storefront2',
+        'NAME': 'store',
         'HOST':'localhost',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': 'root'
+        'PASSWORD': ''
     }
 }
 
