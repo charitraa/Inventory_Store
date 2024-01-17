@@ -142,21 +142,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING':False,
     'DEFAULTPAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_AUTHENTICATION_CLASSESS':('rest_framework_simplejwt.authentication.JWTAuthentication'),
+    'DEFAULT_AUTHENTICATION_CLASSESS':('rest_framework.permissions.IsAuthenticated'),
+
 }
 
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES':('JWT',),
-}
 AUTH_USER_MODEL = 'core.User'
 
 DJOSER = {
     'SERIALIZERS':{
-        'user_create':'core.serializers.UserCreateSerializer'
+        'user_create':'core.serializers.UserCreateSerializer',
+        'current_user': 'core.serializers.UserSerializer'
     }
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1)
+    'AUTH_HEADER_TYPES':('JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1)
 
 }
