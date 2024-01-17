@@ -5,10 +5,10 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.mixins import CreateModelMixin ,RetrieveModelMixin , UpdateModelMixin
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated , AllowAny
+from rest_framework.permissions import IsAuthenticated , AllowAny,IsAdminUser,DjangoModelPermissions
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .permissions import ISAdminOrReadOnly
+from .permissions import ISAdminOrReadOnly,FullDjangoModelpermission, ViewCustomerHistoryPermission
 from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer
 from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer
 from .filters import ProductFilter
@@ -35,6 +35,7 @@ class ProductViewSet(ModelViewSet):
 class CollectionVeiwSet(ModelViewSet):
     queryset = Collection.objects.annotate(product_count=Count('products')).all()
     serializer_class = CollectionSerializer
+    permission_classes = [ISAdminOrReadOnly]
     def get_serializer_context(self):
         return {'request':self.request}
     
@@ -77,17 +78,16 @@ class CartItemViewSet(ModelViewSet):
         return CartItem.objects.filter(cart_id=self.kwargs['cart_pk']).select_related('product')
     
 
-class CustomerViewSet(CreateModelMixin, RetrieveModelMixin,UpdateModelMixin , GenericViewSet):
+class CustomerViewSet(ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
-    def get_permissions(self):
-        if self.request.method =='GET':
-            return[AllowAny()]
-        return [IsAuthenticated()]
+    @action(detail=True,permission_classes=[ViewCustomerHistoryPermission])
+    def history(self,request,pk):
+        return Response('ok')
 
-    @action(detail=False,methods=['GET','PUT'])
+    @action(detail=False,methods=['GET','PUT'],permission_classes=[IsAuthenticated])
     def me(self,request):
         (customer,created) = Customer.objects.get_or_create(user_id = request.user.id)
         if request.method == 'GET':
@@ -97,6 +97,6 @@ class CustomerViewSet(CreateModelMixin, RetrieveModelMixin,UpdateModelMixin , Ge
             serializer = CustomerSerializer(customer,data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data) 
         
 

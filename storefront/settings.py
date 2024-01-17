@@ -142,7 +142,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING':False,
     'DEFAULTPAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_AUTHENTICATION_CLASSESS':('rest_framework.permissions.IsAuthenticated'),
+    'DEFAULT_AUTHENTICATION_CLASSESS':'rest_framework_simplejwt.authentication.JWAuthentication',
 
 }
 
@@ -160,3 +160,4 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1)
 
 }
+
