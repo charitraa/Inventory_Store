@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated , AllowAny,IsAdminUser,Dj
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .permissions import ISAdminOrReadOnly,FullDjangoModelpermission, ViewCustomerHistoryPermission
-from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer
-from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer
+from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer, Order
+from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer
 from .filters import ProductFilter
 from store.pagination import DEfaultPagination
 # Create your views here.
@@ -83,7 +83,7 @@ class CustomerViewSet(ModelViewSet):
     serializer_class = CustomerSerializer
     permission_classes = [IsAdminUser]
 
-    @action(detail=True,permission_classes=[ViewCustomerHistoryPermission])
+    @action(detail=True,permission_classes=[ViewCustomerHistoryPermission ])
     def history(self,request,pk):
         return Response('ok')
 
@@ -97,6 +97,18 @@ class CustomerViewSet(ModelViewSet):
             serializer = CustomerSerializer(customer,data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data) 
+            return Response(serializer.data)
         
 
+        
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = orderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):  
+        if self.request.user.is_staff:
+            return Order.objects.all()
+        customer_id =Customer.objects.only('id').get(user_id=self.request.user.id)
+        return Order.objects.filter(customer_id=customer_id)
+    
