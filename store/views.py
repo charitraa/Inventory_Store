@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .permissions import ISAdminOrReadOnly,FullDjangoModelpermission, ViewCustomerHistoryPermission
 from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer, Order
-from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer
+from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer,CreateOrderSerializer
 from .filters import ProductFilter
 from store.pagination import DEfaultPagination
 # Create your views here.
@@ -103,12 +103,19 @@ class CustomerViewSet(ModelViewSet):
         
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = orderSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateOrderSerializer
+        return orderSerializer
+
+    def get_serializer_context(self):
+        return {'user_id':self.request.user.id}
+    
     def get_queryset(self):  
         if self.request.user.is_staff:
             return Order.objects.all()
-        customer_id =Customer.objects.only('id').get(user_id=self.request.user.id)
+        (customer_id,created) =Customer.objects.only('id').get_or_create(user_id=self.request.user.id)
         return Order.objects.filter(customer_id=customer_id)
     

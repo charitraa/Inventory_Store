@@ -19,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
     
     price_with_tax = serializers.SerializerMethodField(method_name='calculate_tax')
     def calculate_tax(self, product:Product):
-        return product.unit_price * Decimal(1.1)
+        return product.unit_price * Decimal(1.1)    
     
 class ReviewSerializer(serializers.ModelSerializer):
     class  Meta:
@@ -103,3 +103,13 @@ class orderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields  = ['id','customer','placed_at','payment_status','items'] 
+
+class CreateOrderSerializer(serializers.Serializer):
+    cart_id = serializers.UUIDField()
+
+    def save(self, **kwargs):
+        (custome_id,created) = Customer.objects.get_or_create(user_id = self.context['user_id'])
+        order = Order.objects.create(customer=custome_id) 
+        cart_items = CartItem.objects.select_related('product').filter(cart_id=self.validated_data['cart_id'])
+        order_items = [OrderItem(order=order,product=item.product,unit_price = item.product.unit_price, quantity = item.quantity) for item in cart_items]
+        OrderItem.objects.bulk_create(order_items)
