@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated , AllowAny,IsAdminUser,DjangoModelPermissions
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .permissions import ISAdminOrReadOnly,FullDjangoModelpermission, ViewCustomerHistoryPermission
+from .permissions import ISAdminOrReadOnly,ViewCustomerHistoryPermission
 from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer, Order
 from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer,CreateOrderSerializer,UpdateOrderSerializer
 from .filters import ProductFilter
