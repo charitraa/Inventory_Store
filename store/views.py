@@ -89,7 +89,7 @@ class CustomerViewSet(ModelViewSet):
 
     @action(detail=False,methods=['GET','PUT'],permission_classes=[IsAuthenticated])
     def me(self,request):
-        (customer,created) = Customer.objects.get_or_create(user_id = request.user.id)
+        customer = Customer.objects.get(user_id = request.user.id)
         if request.method == 'GET':
             Serializer = CustomerSerializer(customer)
             return Response(Serializer.data)
@@ -102,7 +102,7 @@ class CustomerViewSet(ModelViewSet):
 
 
 class OrderViewSet(ModelViewSet):
-    http_method_names = ['get','patch','delete','head','options']
+    http_method_names = ['get','post','patch','delete','head','options']
 
     def get_permissions(self):
         if self.request.method in ['PATCH','DELETE']:
@@ -126,5 +126,5 @@ class OrderViewSet(ModelViewSet):
     def get_queryset(self):  
         if self.request.user.is_staff:
             return Order.objects.all()
-        (customerid,created) =Customer.objects.only('id').get_or_create(user_id=self.request.user.id)
+        customerid =Customer.objects.only('id').get(user_id=self.request.user.id)
         return Order.objects.filter(customer_id=customerid)
