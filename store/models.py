@@ -68,7 +68,7 @@ class Order(models.Model):
         (PAYMENT_STATUS_FALIED,'Falied')]
     placed_at = models.DateField(auto_now=True)
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES,default=PAYMENT_STATUS_PENDING) 
-    customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
+    customer = models.ForeignKey(Customer,on_delete=models.PROTECT,related_name ='customer_id')
 
     class Meta:
         permissions = [ ('cancel order','Can cancel order')]

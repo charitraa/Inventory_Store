@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .permissions import ISAdminOrReadOnly,FullDjangoModelpermission, ViewCustomerHistoryPermission
 from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer, Order
-from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer,CreateOrderSerializer
+from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer,CreateOrderSerializer,UpdateOrderSerializer
 from .filters import ProductFilter
 from store.pagination import DEfaultPagination
 # Create your views here.
@@ -100,22 +100,31 @@ class CustomerViewSet(ModelViewSet):
             return Response(serializer.data)
         
 
-        
-class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.all()
-    permission_classes = [IsAuthenticated]
 
+class OrderViewSet(ModelViewSet):
+    http_method_names = ['get','patch','delete','head','options']
+
+    def get_permissions(self):
+        if self.request.method in ['PATCH','DELETE']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(data=request.data,context = {'user_id':self.request.user.id})
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = orderSerializer(order)
+        return Response(serializer.data)
+    
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return CreateOrderSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateOrderSerializer
         return orderSerializer
-
-    def get_serializer_context(self):
-        return {'user_id':self.request.user.id}
     
     def get_queryset(self):  
         if self.request.user.is_staff:
             return Order.objects.all()
-        (customer_id,created) =Customer.objects.only('id').get_or_create(user_id=self.request.user.id)
-        return Order.objects.filter(customer_id=customer_id)
-    
+        (customerid,created) =Customer.objects.only('id').get_or_create(user_id=self.request.user.id)
+        return Order.objects.filter(customer_id=customerid)
