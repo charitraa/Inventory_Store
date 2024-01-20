@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated , AllowAny,IsAdminUser,Dj
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .permissions import ISAdminOrReadOnly,ViewCustomerHistoryPermission
-from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer, Order
-from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer,CreateOrderSerializer,UpdateOrderSerializer
+from .models import Product , Collection , OrderItem , Review ,Cart,CartItem, Customer, Order, ProductImage
+from .serializers import ProductSerializer , CollectionSerializer, ReviewSerializer, CartSerializer,CartItemSerializer, ADDCartItemSerializer, updateCartItemSerializer ,CustomerSerializer, orderSerializer,CreateOrderSerializer,UpdateOrderSerializer, ProductImageSerializer
 from .filters import ProductFilter
 from store.pagination import DEfaultPagination
 # Create your views here.
@@ -128,3 +128,14 @@ class OrderViewSet(ModelViewSet):
             return Order.objects.all()
         customerid =Customer.objects.only('id').get(user_id=self.request.user.id)
         return Order.objects.filter(customer_id=customerid)
+
+class ProductImageViewSet(ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_serializer_context(self):
+        return {'product_id': self.kwargs['product_pk']}
+    
+    def get_queryset(self):
+        #geeting the primary key of product from the url of API
+        #and return the image of product of it's
+        return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
