@@ -1,0 +1,12 @@
+Django
+Django                        5.0.1
+django-filter                 23.5
+django-nested-admin           4.0.2
+django-rest-framework-nested  0.0.1
+django-templated-mail         1.1.1
+djangorestframework           3.14.0
+djangorestframework-simplejwt 5.2.1
+djoser                        2.2.2
+drf-nested-routers            0.93.5
+mysql-connector-python
+pillow
