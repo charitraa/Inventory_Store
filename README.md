@@ -1,4 +1,4 @@
-# Awesome Cart
+# Inventory Store
 
 # Getting Started
 
