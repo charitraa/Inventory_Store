@@ -4,7 +4,7 @@
 
 First clone the repository from Github and switch to the new directory:
   ```shell
-    $ gh repo clone charitraa/StoreFront
+    $ git clone https://github.com/charitraa/Inventory_Store.git
     $ cd StoreFront
   ```
 
